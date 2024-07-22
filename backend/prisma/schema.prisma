@@ -13,11 +13,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Student {
+  id         String           @id @default(cuid())
+  email      String           @unique
+  Firstname  String           @db.VarChar(255)
+  Lastname   String           @db.VarChar(255)
+  password   String
+  course     String?
+  department String?
+  subjects   StudentSubject[]
+  birthday   DateTime
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}
+
+model Subject {
+  id       Int              @id @default(autoincrement())
+  name     String
+  students StudentSubject[]
+}
+
+model StudentSubject {
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId String
+  subject   Subject @relation(fields: [subjectId], references: [id])
+  subjectId Int
+
+  @@id([studentId, subjectId])
 }
